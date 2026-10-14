@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGN | Email Confirmation</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #030817;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      background:
+        url("./sgn-confirmation.png")
+        center center / contain no-repeat;
+    }
+
+    .message {
+      display: none;
+      width: min(440px, 100%);
+      padding: 28px;
+      border: 1px solid #30416e;
+      border-radius: 20px;
+      background: rgba(4, 10, 30, 0.96);
+      text-align: center;
+      box-shadow: 0 15px 60px rgba(0,0,0,.5);
+    }
+
+    .message h1 { color: #ff7676; }
+    .message p { line-height: 1.6; }
+
+    .message a {
+      color: #56b8ff;
+    }
+
+    @media (max-width: 600px) {
+      .screen {
+        background-size: 100% auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <section id="error" class="message">
+      <h1>Confirmation link error</h1>
+      <p id="details">
+        We couldn't confirm your email.
+        Please return to SGN and request a new link.
+      </p>
+      <p>
+        <a href="mailto:lewisgrima88@gmail.com">
+          Contact SGN Support
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const hash = new URLSearchParams(
+      window.location.hash.substring(1)
+    );
+
+    const query = new URLSearchParams(
+      window.location.search
+    );
+
+    const error = hash.get("error") ||
+                  query.get("error");
+
+    const description =
+      hash.get("error_description") ||
+      query.get("error_description");
+
+    if (error) {
+      document.querySelector(".screen").style.backgroundImage =
+        "none";
+
+      document.getElementById("error").style.display =
+        "block";
+
+      document.getElementById("details").textContent =
+        description ||
+        "The confirmation link is invalid or expired. " +
+        "Please request a new link in SGN.";
+    }
+
+    // Remove authentication tokens from the address bar.
+    if (window.location.hash) {
+      history.replaceState(
+        null,
+        "",
+        window.location.pathname
+      );
+    }
+  </script>
+</body>
+</html>
