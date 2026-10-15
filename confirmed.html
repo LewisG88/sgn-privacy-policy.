@@ -5,67 +5,113 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SGN | Email Confirmation</title>
+
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background: #030817;
+      padding: 20px;
+      display: grid;
+      place-items: center;
+      background: #060817;
       color: white;
       font-family: Arial, sans-serif;
     }
 
-    .screen {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-      background:
-        url("./sgn-confirmation.png")
-        center center / contain no-repeat;
-    }
-
-    .message {
-      display: none;
-      width: min(440px, 100%);
-      padding: 28px;
-      border: 1px solid #30416e;
-      border-radius: 20px;
-      background: rgba(4, 10, 30, 0.96);
+    .card {
+      width: 100%;
+      max-width: 480px;
+      padding: 36px 24px;
       text-align: center;
-      box-shadow: 0 15px 60px rgba(0,0,0,.5);
+      border: 1px solid #7046aa;
+      border-radius: 24px;
+      background: linear-gradient(160deg, #20133b, #090e24);
+      box-shadow: 0 20px 70px rgba(0,0,0,.5);
     }
 
-    .message h1 { color: #ff7676; }
-    .message p { line-height: 1.6; }
-
-    .message a {
-      color: #56b8ff;
+    .logo {
+      color: #c393ff;
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: 5px;
     }
 
-    @media (max-width: 600px) {
-      .screen {
-        background-size: 100% auto;
-      }
+    .subtitle {
+      margin-top: 8px;
+      color: #bdb0d5;
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 27px;
+    }
+
+    p {
+      color: #ccc6de;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: block;
+      margin: 24px auto 12px;
+      padding: 17px;
+      border: 1px solid #c095ff;
+      border-radius: 13px;
+      background: #7835df;
+      color: white;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .button:hover {
+      background: #914df0;
+    }
+
+    .secondary {
+      display: block;
+      padding: 10px;
+      color: #bcb2d8;
+    }
+
+    #success, #error {
+      display: none;
     }
   </style>
 </head>
+
 <body>
-  <main class="screen">
-    <section id="error" class="message">
-      <h1>Confirmation link error</h1>
-      <p id="details">
-        We couldn't confirm your email.
-        Please return to SGN and request a new link.
-      </p>
+  <main class="card">
+    <div class="logo">◈ SGN</div>
+    <div class="subtitle">THE SOCIAL GAMING NETWORK</div>
+
+    <section id="success">
+      <h1>Return to SGN</h1>
       <p>
-        <a href="mailto:lewisgrima88@gmail.com">
-          Contact SGN Support
-        </a>
+        Your confirmation link has been opened.
+        Return to SGN and sign in to check your account.
       </p>
     </section>
+
+    <section id="error">
+      <h1>Confirmation link expired or invalid</h1>
+      <p>
+        This confirmation link may have expired or already
+        been used. Return to SGN to request another link.
+      </p>
+    </section>
+
+    <a class="button" href="sgn://auth/callback">
+      Return to SGN App ↗
+    </a>
+
+    <a class="secondary"
+       href="https://play.google.com/store/apps/details?id=com.sgn.socialgamingnetwork">
+      Open SGN on Google Play
+    </a>
   </main>
 
   <script>
@@ -77,34 +123,20 @@
       window.location.search
     );
 
-    const error = hash.get("error") ||
-                  query.get("error");
+    const error = hash.get("error") || query.get("error");
 
-    const description =
-      hash.get("error_description") ||
-      query.get("error_description");
+    document.getElementById(
+      error ? "error" : "success"
+    ).style.display = "block";
 
-    if (error) {
-      document.querySelector(".screen").style.backgroundImage =
-        "none";
-
-      document.getElementById("error").style.display =
-        "block";
-
-      document.getElementById("details").textContent =
-        description ||
-        "The confirmation link is invalid or expired. " +
-        "Please request a new link in SGN.";
-    }
-
-    // Remove authentication tokens from the address bar.
+    // Remove tokens from the address bar.
     if (window.location.hash) {
       history.replaceState(
         null,
         "",
-        window.location.pathname
+        window.location.pathname + window.location.search
       );
     }
-</script>
+  </script>
 </body>
 </html>
